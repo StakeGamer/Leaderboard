@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Monthly Leaderboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --bg: #0a0c10;
+  --card: #0f1320;
+  --border: #1f2433;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #3b82f6;
+  --gold: #FFD700;
+  --silver: #C0C0C0;
+  --bronze: #CD7F32;
+  --wager: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header {
+  text-align: center;
+  padding: 42px 20px 28px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 700;
+}
+.header p1 {
+  display: block;
+  text-align: center;
+  margin: 12px auto 0;
+  max-width: 800px;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+/* Countdown styling */
+#countdown {
+  margin-top: 15px;
+  font-size: 20px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 0 20px 40px;
+}
+
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  animation: fadeIn 1s ease forwards;
+}
+
+th {
+  padding: 14px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+tbody tr:hover {
+  background: #0b1028;
+}
+
+.rank {
+  font-weight: 700;
+}
+
+.wager {
+  color: var(--wager);
+  font-weight: 600;
+}
+
+.top1 { color: var(--gold); font-size: 16px; }
+.top2 { color: var(--silver); font-size: 15px; }
+.top3 { color: var(--bronze); font-size: 14px; }
+
+.prize-info-box, .rules-box {
+  background: #111426;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 25px;
+  color: var(--text);
+}
+
+.rules-box h2 {
+  margin-top: 0;
+  color: var(--accent);
+}
+
+.rules-box ul {
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.footer {
+  text-align: center;
+  padding: 22px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(20px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>$900 December Wager Leaderboard</h1>
+  <p1>To join our wager leaderboard, sign up for a Stake account using the promo code "free21" Once registered, your wagers will automatically count towards the leaderboard.</p1>
+  <div id="countdown"></div>
+</div>
+
+<div class="container">
+  <!-- Leaderboard Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>User</th>
+          <th>Wager</th>
+          <th>Prize</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard"></tbody>
+    </table>
+  </div>
+
+  <!-- Prize Info Section -->
+  <div class="prize-info-box">
+    <p style="margin: 0;">You will receive your prize directly to your Stake account each month after the leaderboard ends.</p>
+  </div>
+
+  <!-- Wager Rules Section -->
+  <div class="rules-box">
+    <h2>Wager Rules</h2>
+    <p>Important: All Stake leaderboards now follow their new weighted wager system.</p>
+    <p>Leaderboard wager amounts may differ from your statistics on Stake, depending on the games you are playing:</p>
+    <ul>
+      <li>Games with RTP of 98% or lower → 100% of wager is counted</li>
+      <li>Games with RTP between 98% and 99% → 50% of wager is counted</li>
+      <li>Games with RTP of 99% and over → 10% of wager is counted</li>
+    </ul>
+  </div>
+</div>
+
+<div class="footer">
+ (18+) We do not take responsibility for any losses from gambling in casinos and betting sites which are linked or promoted on our website(s). As a player, you are responsible for your bets.
+</div>
+
+<script>
+const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
+const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+// Mask username (show first and last character)
+function maskUsername(name) {
+  if (!name) return "";
+  const len = name.length;
+  if (len <= 3) return "*".repeat(len);
+  return name[0] + "*".repeat(len - 2) + name[len - 1];
+}
+
+// Prize mapping
+function getPrize(rank) {
+  const prizes = {
+    1: "👑 $300", 2: "🥈 $180", 3: "🥉 $120",
+    4: "$40", 5: "$35", 6: "$32", 7: "$30",
+    8: "$23", 9: "$22", 10: "$16", 11: "$15",
+    12: "$14", 13: "$13", 14: "$12", 15: "$11",
+    16: "$10", 17: "$9", 18: "$8", 19: "$5", 20: "$5"
+  };
+  return prizes[rank] || "";
+}
+
+function getRankClass(rank) {
+  if (rank == 1) return "top1";
+  if (rank == 2) return "top2";
+  if (rank == 3) return "top3";
+  return "";
+}
+
+// Fetch leaderboard data
+fetch(url)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const rows = json.table.rows;
+    const tbody = document.getElementById("leaderboard");
+
+    tbody.innerHTML = "";
+
+    rows.slice(0, 20).forEach(r => {
+      const rank = r.c[4]?.v || "";
+      const username = maskUsername(r.c[2]?.v || "");
+      const wager = r.c[3]?.v || 0;
+      const wagerFormatted = Math.floor(wager).toLocaleString(); // remove decimals & add commas
+      const prize = getPrize(rank);
+      const rankClass = getRankClass(rank);
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="rank ${rankClass}">${rank}</td>
+        <td>${username}</td>
+        <td class="wager">${wagerFormatted}</td>
+        <td class="prize">${prize}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+
+// Countdown timer
+function startCountdown() {
+  const endDate = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59); // December 31, 23:59:59
+  const countdownEl = document.getElementById("countdown");
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = endDate - now;
+
+    if (diff <= 0) {
+      countdownEl.innerHTML = "Leaderboard ended!";
+      clearInterval(interval);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    countdownEl.innerHTML = `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateCountdown();
+  const interval = setInterval(updateCountdown, 1000);
+}
+
+startCountdown();
+</script>
+
+</body>
+</html>
