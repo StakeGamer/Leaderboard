@@ -49,7 +49,6 @@ body {
   line-height: 1.5;
 }
 
-/* Countdown styling */
 #countdown {
   margin-top: 15px;
   font-size: 20px;
@@ -115,7 +114,6 @@ tbody tr:hover {
   border-radius: 12px;
   padding: 20px;
   margin-top: 25px;
-  color: var(--text);
 }
 
 .rules-box h2 {
@@ -136,8 +134,8 @@ tbody tr:hover {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px);}
-  100% { opacity: 1; transform: translateY(0);}
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -151,7 +149,6 @@ tbody tr:hover {
 </div>
 
 <div class="container">
-  <!-- Leaderboard Table -->
   <div class="table-wrap">
     <table>
       <thead>
@@ -166,12 +163,11 @@ tbody tr:hover {
     </table>
   </div>
 
-  <!-- Prize Info Section -->
+ <!-- Prize Info Section -->
   <div class="prize-info-box">
     <p style="margin: 0;">You will receive your prize directly to your Stake account each month after the leaderboard ends.</p>
   </div>
 
-  <!-- Wager Rules Section -->
   <div class="rules-box">
     <h2>Wager Rules</h2>
     <p>Important: All Stake leaderboards now follow their new weighted wager system.</p>
@@ -185,19 +181,23 @@ tbody tr:hover {
 </div>
 
 <div class="footer">
- (18+) We do not take responsibility for any losses from gambling in casinos and betting sites which are linked or promoted on our website(s). As a player, you are responsible for your bets.
+(18+) We do not take responsibility for any losses from gambling in casinos and betting sites which are linked or promoted on our website(s). As a player, you are responsible for your bets.
 </div>
 
 <script>
 const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
 const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-// Mask username (show first and last character)
+// ✅ 50% visible, 50% masked username
 function maskUsername(name) {
   if (!name) return "";
   const len = name.length;
-  if (len <= 3) return "*".repeat(len);
-  return name[0] + "*".repeat(len - 2) + name[len - 1];
+  if (len <= 2) return "*".repeat(len);
+
+  const visible = Math.ceil(len / 2);
+  const hidden = len - visible;
+
+  return name.slice(0, visible) + "*".repeat(hidden);
 }
 
 // Prize mapping
@@ -205,9 +205,10 @@ function getPrize(rank) {
   const prizes = {
     1: "👑 $300", 2: "🥈 $180", 3: "🥉 $120",
     4: "$40", 5: "$35", 6: "$32", 7: "$30",
-    8: "$23", 9: "$22", 10: "$16", 11: "$15",
-    12: "$14", 13: "$13", 14: "$12", 15: "$11",
-    16: "$10", 17: "$9", 18: "$8", 19: "$5", 20: "$5"
+    8: "$23", 9: "$22", 10: "$16",
+    11: "$15", 12: "$14", 13: "$13",
+    14: "$12", 15: "$11", 16: "$10",
+    17: "$9", 18: "$8", 19: "$5", 20: "$5"
   };
   return prizes[rank] || "";
 }
@@ -219,7 +220,7 @@ function getRankClass(rank) {
   return "";
 }
 
-// Fetch leaderboard data
+// Fetch data
 fetch(url)
   .then(res => res.text())
   .then(text => {
@@ -232,49 +233,42 @@ fetch(url)
     rows.slice(0, 20).forEach(r => {
       const rank = r.c[4]?.v || "";
       const username = maskUsername(r.c[2]?.v || "");
-      const wager = r.c[3]?.v || 0;
-      const wagerFormatted = Math.floor(wager).toLocaleString(); // remove decimals & add commas
+      const wager = Math.floor(r.c[3]?.v || 0).toLocaleString();
       const prize = getPrize(rank);
       const rankClass = getRankClass(rank);
 
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="rank ${rankClass}">${rank}</td>
-        <td>${username}</td>
-        <td class="wager">${wagerFormatted}</td>
-        <td class="prize">${prize}</td>
+      tbody.innerHTML += `
+        <tr>
+          <td class="rank ${rankClass}">${rank}</td>
+          <td>${username}</td>
+          <td class="wager">${wager}</td>
+          <td>${prize}</td>
+        </tr>
       `;
-      tbody.appendChild(tr);
     });
   });
 
-// Countdown timer
+// Countdown
 function startCountdown() {
-  const endDate = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59); // December 31, 23:59:59
-  const countdownEl = document.getElementById("countdown");
+  const endDate = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59);
+  const el = document.getElementById("countdown");
 
-  function updateCountdown() {
-    const now = new Date();
-    const diff = endDate - now;
-
+  function update() {
+    const diff = endDate - new Date();
     if (diff <= 0) {
-      countdownEl.innerHTML = "Leaderboard ended!";
-      clearInterval(interval);
+      el.innerHTML = "Leaderboard ended!";
       return;
     }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-
-    countdownEl.innerHTML = `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff / 3600000) % 24);
+    const m = Math.floor((diff / 60000) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    el.innerHTML = `Time left: ${d}d ${h}h ${m}m ${s}s`;
   }
 
-  updateCountdown();
-  const interval = setInterval(updateCountdown, 1000);
+  update();
+  setInterval(update, 1000);
 }
-
 startCountdown();
 </script>
 
