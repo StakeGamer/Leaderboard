@@ -375,6 +375,71 @@ tbody tr:hover {
   }
 }
 
+  /* =========================
+   GLOBAL RIPPLE EFFECT (CSS)
+   ========================= */
+
+/* Apply ripple to interactive elements */
+a,
+button,
+.promo-btn,
+.social-link,
+.promo-box,
+.table-wrap,
+.info-box,
+.rules-box,
+tbody tr {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ripple layer */
+a::after,
+button::after,
+.promo-btn::after,
+.social-link::after,
+.promo-box::after,
+.table-wrap::after,
+.info-box::after,
+.rules-box::after,
+tbody tr::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(
+    circle,
+    rgba(59,130,246,.35) 10%,
+    transparent 60%
+  );
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Trigger on click */
+a:active::after,
+button:active::after,
+.promo-btn:active::after,
+.social-link:active::after,
+.promo-box:active::after,
+.table-wrap:active::after,
+.info-box:active::after,
+.rules-box:active::after,
+tbody tr:active::after {
+  width: 200%;
+  height: 200%;
+  opacity: 1;
+  transition: width .6s ease-out, height .6s ease-out, opacity .8s ease-out;
+}
+
+/* Remove ugly mobile tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
   
 </style>
 </head>
