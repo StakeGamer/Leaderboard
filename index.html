@@ -47,25 +47,65 @@ body {
   flex-wrap:wrap;
 }
 
+/* PROFESSIONAL BRAND */
 .brand {
   display:flex;
   align-items:center;
-  gap:10px;
 }
+
+/* =========================
+   ANIMATED BRAND NAME
+   ========================= */
 
 .brand-name {
-  font-size:18px;
-  font-weight:700;
-  letter-spacing:.5px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+
+  /* Gradient text */
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #3b82f6,
+    #60a5fa,
+    #ffffff
+  );
+  background-size: 300% 100%;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: brandFlow 6s ease-in-out infinite;
 }
 
-.brand-badge {
-  font-size:12px;
-  padding:3px 8px;
-  border-radius:999px;
-  background:var(--accent);
-  color:#fff;
-  font-weight:600;
+/* Smooth flowing animation */
+@keyframes brandFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Mobile tuning */
+@media (max-width: 640px) {
+  .brand-name {
+    font-size: 16px;
+    letter-spacing: 0.4px;
+  }
+}
+
+
+/* RESPONSIVE FIX */
+@media (max-width: 640px) {
+  .social-inner {
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .brand-name {
+    font-size:16px;
+    letter-spacing:0.4px;
+  }
 }
 
 .social-links {
@@ -231,6 +271,111 @@ tbody tr:hover {
   font-size:12px;
   color:#6b7280;
 }
+  
+  /* =========================
+   GLOBAL HOVER EFFECT SYSTEM
+   ========================= */
+
+/* Enable only on devices that support hover */
+@media (hover: hover) {
+
+  /* Cards / Boxes */
+  .promo-box,
+  .table-wrap,
+  .info-box,
+  .rules-box {
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+
+  .promo-box:hover,
+  .table-wrap:hover,
+  .info-box:hover,
+  .rules-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(59,130,246,.15);
+    border-color: var(--accent);
+  }
+
+  /* Buttons */
+  .promo-btn,
+  .social-link {
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+
+  .promo-btn:hover,
+  .social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59,130,246,.25);
+  }
+
+  /* Table Rows */
+  tbody tr {
+    transition: background .2s ease, transform .2s ease;
+  }
+
+  tbody tr:hover {
+    background: rgba(59,130,246,.08);
+    transform: scale(1.01);
+  }
+
+  /* Links */
+  a {
+    transition: color .2s ease;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+}
+
+/* Disable tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+  /* =========================
+   ANIMATED HEADER TITLE
+   ========================= */
+
+.animated-header {
+  font-size: 44px;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.6px;
+  margin: 0;
+
+  /* Gradient text */
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #3b82f6,
+    #60a5fa,
+    #ffffff
+  );
+  background-size: 300% 100%;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: headerFlow 7s ease-in-out infinite;
+}
+
+/* Smooth gradient movement */
+@keyframes headerFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .animated-header {
+    font-size: 28px;
+    letter-spacing: 0.4px;
+  }
+}
+
+  
 </style>
 </head>
 
@@ -240,9 +385,9 @@ tbody tr:hover {
 <div class="social-panel">
   <div class="social-inner">
     <div class="brand">
-      <div class="brand-name">Stake Gamer</div>
-      <div class="brand-badge">OFFICIAL</div>
-    </div>
+  <span class="brand-name">Stake Gamer</span>
+</div>
+
     <div class="social-links">
       <a href="https://discord.gg/g6exqaX8nZ" target="_blank" class="social-link">💬 Discord</a>
       <a href="https://www.instagram.com/_stakegamer?igsh=MTV0cjVqazAwdHRsbg==" target="_blank" class="social-link">📸 Instagram</a>
@@ -255,7 +400,7 @@ tbody tr:hover {
 <div class="promo-wrapper">
 
   <div class="promo-box">
-    <h2>🎁 Stake.com </h2>
+    <h2>🎁 Stake.com</h2>
     <div class="promo-steps">
       ✅ Sign up using code <span>free21</span><br>
       ✅ Deposit & wager <span>$21+</span><br>
@@ -263,27 +408,34 @@ tbody tr:hover {
       ✅ Verified → reload activated
     </div>
     <div class="promo-note">Global users only • Code required</div>
-    <a href="https://discord.gg/g6exqaX8nZ" class="promo-btn">Join Discord</a>
+    <div class="promo-actions">
+      <a href="https://discord.gg/g6exqaX8nZ" target="_blank" class="promo-btn secondary">Join Discord</a>
+      <a href="https://stake.ac/?c=da3ed7a00a&offer=free21" target="_blank" class="promo-btn">Sign Up (Stake.com)</a>
+    </div>
   </div>
 
   <div class="promo-box">
-    <h2>🎁 Stake.us </h2>
+    <h2>🎁 Stake.us</h2>
     <div class="promo-steps">
       ✅ Sign up using code <span>free21</span><br>
       ✅ Verify your account within 3 days<br>
-      ✅ Receive a claimable $21 coupon
-      <br>
-      ✅ Play your favorite games<br>
+      ✅ Receive a claimable $21 coupon<br>
+      ✅ Play your favorite games
     </div>
     <div class="promo-note">US users only • Code required</div>
-    <a href="https://discord.gg/g6exqaX8nZ" class="promo-btn">Join Discord</a>
+    <div class="promo-actions">
+      <a href="https://discord.gg/g6exqaX8nZ" target="_blank" class="promo-btn secondary">Join Discord</a>
+      <a href="http://stake.us/?c=O02lEJbr&offer=free21" target="_blank" class="promo-btn">Sign Up (Stake.us)</a>
+    </div>
   </div>
 
 </div>
 
+
 <!-- HEADER -->
 <div class="header">
-  <h1>$900 December Wager Leaderboard</h1>
+  <h1 class="animated-header">$900 December Wager Leaderboard</h1>
+
   <p1>To join our wager leaderboard, sign up for a Stake account using the promo code <b>free21</b> Once registered, your wagers will automatically count towards the leaderboard.</p1>
   <div id="countdown"></div>
 </div>
@@ -370,4 +522,3 @@ startCountdown();
 
 </body>
 </html>
-
