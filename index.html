@@ -376,71 +376,35 @@ tbody tr:hover {
 }
 
   /* =========================
-   GLOBAL RIPPLE EFFECT (CSS)
+   CLICK POSITION RIPPLE
    ========================= */
 
-/* Apply ripple to interactive elements */
-a,
-button,
-.promo-btn,
-.social-link,
-.promo-box,
-.table-wrap,
-.info-box,
-.rules-box,
-tbody tr {
+.ripple-container {
   position: relative;
   overflow: hidden;
 }
 
-/* Ripple layer */
-a::after,
-button::after,
-.promo-btn::after,
-.social-link::after,
-.promo-box::after,
-.table-wrap::after,
-.info-box::after,
-.rules-box::after,
-tbody tr::after {
-  content: "";
+.ripple-effect {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(
-    circle,
-    rgba(59,130,246,.35) 10%,
-    transparent 60%
-  );
-  transform: translate(-50%, -50%);
-  opacity: 0;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleAnim 600ms linear;
+  background: rgba(59,130,246, 0.35);
   pointer-events: none;
 }
 
-/* Trigger on click */
-a:active::after,
-button:active::after,
-.promo-btn:active::after,
-.social-link:active::after,
-.promo-box:active::after,
-.table-wrap:active::after,
-.info-box:active::after,
-.rules-box:active::after,
-tbody tr:active::after {
-  width: 200%;
-  height: 200%;
-  opacity: 1;
-  transition: width .6s ease-out, height .6s ease-out, opacity .8s ease-out;
+@keyframes rippleAnim {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 
-/* Remove ugly mobile tap highlight */
+/* Remove mobile tap highlight */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-  
 </style>
 </head>
 
@@ -585,5 +549,33 @@ function startCountdown(){
 startCountdown();
 </script>
 
+  <script>
+document.addEventListener("click", function (e) {
+  const target = e.target.closest(
+    "a, button, .promo-btn, .social-link, .promo-box, .table-wrap, .info-box, .rules-box, tbody tr"
+  );
+  if (!target) return;
+
+  target.classList.add("ripple-container");
+
+  const ripple = document.createElement("span");
+  ripple.classList.add("ripple-effect");
+
+  const rect = target.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + "px";
+
+  ripple.style.left = e.clientX - rect.left - size / 2 + "px";
+  ripple.style.top = e.clientY - rect.top - size / 2 + "px";
+
+  target.appendChild(ripple);
+
+  ripple.addEventListener("animationend", () => {
+    ripple.remove();
+  });
+});
+</script>
+
+  
 </body>
 </html>
