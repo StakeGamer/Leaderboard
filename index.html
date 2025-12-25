@@ -2,153 +2,294 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Monthly Leaderboard</title>
+<title>Stake Gamer – Monthly Leaderboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 :root {
-  --bg: #0a0c10;
-  --card: #0f1320;
-  --border: #1f2433;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --accent: #3b82f6;
-  --gold: #FFD700;
-  --silver: #C0C0C0;
-  --bronze: #CD7F32;
-  --wager: #3b82f6;
+  --bg:#0a0c10;
+  --card:#0f1320;
+  --border:#1f2433;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --accent:#3b82f6;
+  --wager:#3b82f6;
 }
 
 * {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, sans-serif;
+  box-sizing:border-box;
+  font-family:Inter,system-ui,sans-serif;
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
 }
 
+/* 🔒 STICKY BRAND PANEL */
+.social-panel {
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:linear-gradient(135deg,#0f172a,#020617);
+  border-bottom:1px solid var(--border);
+}
+
+.social-inner {
+  max-width:900px;
+  margin:auto;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand-name {
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+
+.brand-badge {
+  font-size:12px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+}
+
+.social-links {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.social-link {
+  padding:8px 14px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text);
+  text-decoration:none;
+  background:#111426;
+  border:1px solid var(--border);
+  transition:.25s;
+}
+
+.social-link:hover {
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+/* 🔥 PROMO GRID */
+.promo-wrapper {
+  max-width:900px;
+  margin:30px auto 0;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px;
+}
+
+.promo-box {
+  background:linear-gradient(135deg,#0f172a,#020617);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+}
+
+.promo-box h2 {
+  margin-top:0;
+  color:var(--accent);
+  font-size:20px;
+}
+
+.promo-steps {
+  line-height:1.7;
+  font-size:15px;
+}
+
+.promo-steps span {
+  color:var(--accent);
+  font-weight:600;
+}
+
+.promo-note {
+  margin-top:12px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.promo-btn {
+  display:inline-block;
+  margin-top:16px;
+  padding:10px 16px;
+  background:var(--accent);
+  color:#fff;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14px;
+}
+
+/* HEADER */
 .header {
-  text-align: center;
-  padding: 42px 20px 28px;
+  text-align:center;
+  padding:42px 20px 28px;
 }
+
 .header h1 {
-  margin: 0;
-  font-size: 44px;
-  font-weight: 700;
+  margin:0;
+  font-size:44px;
+  font-weight:700;
 }
+
 .header p1 {
-  display: block;
-  text-align: center;
-  margin: 12px auto 0;
-  max-width: 800px;
-  color: var(--muted);
-  font-size: 20px;
-  line-height: 1.5;
+  display:block;
+  margin:12px auto 0;
+  max-width:800px;
+  color:var(--muted);
+  font-size:20px;
+  line-height:1.5;
 }
 
 #countdown {
-  margin-top: 15px;
-  font-size: 20px;
-  color: var(--accent);
-  font-weight: 600;
+  margin-top:15px;
+  font-size:20px;
+  color:var(--accent);
+  font-weight:600;
 }
 
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 0 20px 40px;
+  max-width:900px;
+  margin:auto;
+  padding:0 20px 40px;
 }
 
+/* TABLE */
 .table-wrap {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow-x: auto;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow-x:auto;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  animation: fadeIn 1s ease forwards;
+  width:100%;
+  border-collapse:collapse;
 }
 
 th {
-  padding: 14px;
-  font-size: 12px;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
+  padding:14px;
+  font-size:12px;
+  text-transform:uppercase;
+  color:var(--muted);
+  border-bottom:1px solid var(--border);
 }
 
 td {
-  padding: 15px;
-  text-align: center;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-  transition: all 0.3s ease;
+  padding:15px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  font-size:14px;
 }
 
 tbody tr:hover {
-  background: #0b1028;
+  background:#0b1028;
 }
 
-.rank {
-  font-weight: 700;
-}
+.rank {font-weight:700;}
+.wager {color:var(--wager);font-weight:600;}
 
-.wager {
-  color: var(--wager);
-  font-weight: 600;
-}
-
-.top1 { color: var(--gold); font-size: 16px; }
-.top2 { color: var(--silver); font-size: 15px; }
-.top3 { color: var(--bronze); font-size: 14px; }
-
-.prize-info-box, .rules-box {
-  background: #111426;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 25px;
+.prize-info-box,.rules-box {
+  background:#111426;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-top:25px;
 }
 
 .rules-box h2 {
-  margin-top: 0;
-  color: var(--accent);
-}
-
-.rules-box ul {
-  padding-left: 20px;
-  line-height: 1.6;
+  margin-top:0;
+  color:var(--accent);
 }
 
 .footer {
-  text-align: center;
-  padding: 22px;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  text-align:center;
+  padding:22px;
+  font-size:12px;
+  color:#6b7280;
 }
 </style>
 </head>
 
 <body>
 
+<!-- 🔗 STICKY BRAND PANEL -->
+<div class="social-panel">
+  <div class="social-inner">
+    <div class="brand">
+      <div class="brand-name">Stake Gamer</div>
+      <div class="brand-badge">OFFICIAL</div>
+    </div>
+    <div class="social-links">
+      <a href="https://discord.gg/g6exqaX8nZ" target="_blank" class="social-link">💬 Discord</a>
+      <a href="https://www.instagram.com/_stakegamer?igsh=MTV0cjVqazAwdHRsbg==" target="_blank" class="social-link">📸 Instagram</a>
+      <a href="https://youtube.com/@stakegamer9?si=_cAQ6yWiNdGFrNpY" target="_blank" class="social-link">▶️ YouTube</a>
+    </div>
+  </div>
+</div>
+
+<!-- 🔥 PROMOTIONS -->
+<div class="promo-wrapper">
+
+  <div class="promo-box">
+    <h2>🎁 Stake.com </h2>
+    <div class="promo-steps">
+      ✅ Sign up using code <span>free21</span><br>
+      ✅ Deposit & wager <span>$21+</span><br>
+      ✅ Share username in Discord<br>
+      ✅ Verified → reload activated
+    </div>
+    <div class="promo-note">Stake.com users only • Code required</div>
+    <a href="https://discord.gg/g6exqaX8nZ" class="promo-btn">Join Discord</a>
+  </div>
+
+  <div class="promo-box">
+    <h2>🎁 Stake.us </h2>
+    <div class="promo-steps">
+      ✅ Sign up using code <span>free21</span><br>
+      ✅ Verify your account within 3 days after signing up<br>
+      ✅ You will be emailed a claimable $21 coupon
+      <br>
+      ✅ Use your coupon to play your favorite games<br>
+    </div>
+    <div class="promo-note">Stake.us only • Code required</div>
+    <a href="https://discord.gg/g6exqaX8nZ" class="promo-btn">Join Discord</a>
+  </div>
+
+</div>
+
+<!-- HEADER -->
 <div class="header">
   <h1>$900 December Wager Leaderboard</h1>
-  <p1>To join our wager leaderboard, sign up for a Stake account using the promo code "free21" Once registered, your wagers will automatically count towards the leaderboard.</p1>
+  <p1>To join our wager leaderboard, sign up for a Stake account using the promo code <b>free21</b> Once registered, your wagers will automatically count towards the leaderboard.</p1>
   <div id="countdown"></div>
 </div>
 
 <div class="container">
+
   <div class="table-wrap">
     <table>
       <thead>
@@ -163,9 +304,8 @@ tbody tr:hover {
     </table>
   </div>
 
- <!-- Prize Info Section -->
   <div class="prize-info-box">
-    <p style="margin: 0;">You will receive your prize directly to your Stake account each month after the leaderboard ends.</p>
+    You will receive your prize directly to your Stake account each month after the leaderboard ends.
   </div>
 
   <div class="rules-box">
@@ -173,9 +313,9 @@ tbody tr:hover {
     <p>Important: All Stake leaderboards now follow their new weighted wager system.</p>
     <p>Leaderboard wager amounts may differ from your statistics on Stake, depending on the games you are playing:</p>
     <ul>
-      <li>Games with RTP of 98% or lower → 100% of wager is counted</li>
-      <li>Games with RTP between 98% and 99% → 50% of wager is counted</li>
-      <li>Games with RTP of 99% and over → 10% of wager is counted</li>
+     <li>Games with RTP of 98% or lower → 100% of wager is counted</li>
+     <li>Games with RTP between 98% and 99% → 50% of wager is counted</li>
+     <li>Games with RTP of 99% and over → 10% of wager is counted</li>
     </ul>
   </div>
 </div>
@@ -185,89 +325,45 @@ tbody tr:hover {
 </div>
 
 <script>
-const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
-const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+const sheetId="18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
+const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-// ✅ 50% visible, 50% masked username
-function maskUsername(name) {
-  if (!name) return "";
-  const len = name.length;
-  if (len <= 2) return "*".repeat(len);
-
-  const visible = Math.ceil(len / 2);
-  const hidden = len - visible;
-
-  return name.slice(0, visible) + "*".repeat(hidden);
+function maskUsername(n){
+  if(!n)return"";
+  const v=Math.ceil(n.length/2);
+  return n.slice(0,v)+"*".repeat(n.length-v);
 }
 
-// Prize mapping
-function getPrize(rank) {
-  const prizes = {
-    1: "👑 $300", 2: "🥈 $180", 3: "🥉 $120",
-    4: "$40", 5: "$35", 6: "$32", 7: "$30",
-    8: "$23", 9: "$22", 10: "$16",
-    11: "$15", 12: "$14", 13: "$13",
-    14: "$12", 15: "$11", 16: "$10",
-    17: "$9", 18: "$8", 19: "$5", 20: "$5"
-  };
-  return prizes[rank] || "";
+function getPrize(r){
+  const p={1:"👑 $300",2:"🥈 $180",3:"🥉 $120",4:"$40",5:"$35",6:"$32",7:"$30",8:"$23",9:"$22",10:"$16",11:"$15",12:"$14",13:"$13",14:"$12",15:"$11",16:"$10",17:"$9",18:"$8",19:"$5",20:"$5"};
+  return p[r]||"";
 }
 
-function getRankClass(rank) {
-  if (rank == 1) return "top1";
-  if (rank == 2) return "top2";
-  if (rank == 3) return "top3";
-  return "";
-}
-
-// Fetch data
 fetch(url)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const rows = json.table.rows;
-    const tbody = document.getElementById("leaderboard");
-
-    tbody.innerHTML = "";
-
-    rows.slice(0, 20).forEach(r => {
-      const rank = r.c[4]?.v || "";
-      const username = maskUsername(r.c[2]?.v || "");
-      const wager = Math.floor(r.c[3]?.v || 0).toLocaleString();
-      const prize = getPrize(rank);
-      const rankClass = getRankClass(rank);
-
-      tbody.innerHTML += `
-        <tr>
-          <td class="rank ${rankClass}">${rank}</td>
-          <td>${username}</td>
-          <td class="wager">${wager}</td>
-          <td>${prize}</td>
-        </tr>
-      `;
-    });
+.then(r=>r.text())
+.then(t=>{
+  const j=JSON.parse(t.substring(47).slice(0,-2));
+  const b=document.getElementById("leaderboard");
+  j.table.rows.slice(0,20).forEach(r=>{
+    const rank=r.c[4]?.v||"";
+    b.innerHTML+=`
+    <tr>
+      <td class="rank">${rank}</td>
+      <td>${maskUsername(r.c[2]?.v||"")}</td>
+      <td class="wager">${Math.floor(r.c[3]?.v||0).toLocaleString()}</td>
+      <td>${getPrize(rank)}</td>
+    </tr>`;
   });
+});
 
-// Countdown
-function startCountdown() {
-  const endDate = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59);
-  const el = document.getElementById("countdown");
-
-  function update() {
-    const diff = endDate - new Date();
-    if (diff <= 0) {
-      el.innerHTML = "Leaderboard ended!";
-      return;
-    }
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff / 3600000) % 24);
-    const m = Math.floor((diff / 60000) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-    el.innerHTML = `Time left: ${d}d ${h}h ${m}m ${s}s`;
-  }
-
-  update();
-  setInterval(update, 1000);
+function startCountdown(){
+  const e=new Date(new Date().getFullYear(),11,31,23,59,59);
+  const el=document.getElementById("countdown");
+  setInterval(()=>{
+    const d=e-new Date();
+    if(d<=0)return el.innerHTML="Leaderboard ended!";
+    el.innerHTML=`Time left: ${Math.floor(d/86400000)}d ${Math.floor(d/3600000%24)}h ${Math.floor(d/60000%60)}m ${Math.floor(d/1000%60)}s`;
+  },1000);
 }
 startCountdown();
 </script>
