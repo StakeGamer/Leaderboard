@@ -223,6 +223,103 @@ body {
   margin:auto;
   padding:0 20px 40px;
 }
+  /* =========================
+   HEADER SUBTEXT (PREMIUM)
+   ========================= */
+
+.header-subtext {
+  margin: 14px auto 0;
+  max-width: 820px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Highlight promo code */
+.header-subtext .highlight {
+  color: var(--accent);
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(59,130,246,0.12);
+  box-shadow: 0 0 12px rgba(59,130,246,0.25);
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .header-subtext {
+    font-size: 15px;
+    padding: 0 10px;
+  }
+}
+
+/* ===== PREMIUM TOP 3 STYLES ===== */
+
+tbody tr {
+  position: relative;
+}
+
+/* Glass base for top 3 */
+tr.rank-1,
+tr.rank-2,
+tr.rank-3 {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-left: 5px solid transparent;
+}
+
+/* GOLD – Rank 1 */
+tr.rank-1 {
+  background:
+    linear-gradient(120deg,
+      rgba(255,215,0,0.22),
+      rgba(255,215,0,0.05),
+      transparent
+    );
+  border-left-color: #FFD700;
+  box-shadow:
+    inset 0 0 20px rgba(255,215,0,0.25),
+    0 0 25px rgba(255,215,0,0.25);
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+/* SILVER – Rank 2 */
+tr.rank-2 {
+  background:
+    linear-gradient(120deg,
+      rgba(192,192,192,0.18),
+      rgba(192,192,192,0.05),
+      transparent
+    );
+  border-left-color: #C0C0C0;
+  box-shadow:
+    inset 0 0 18px rgba(192,192,192,0.25),
+    0 0 20px rgba(192,192,192,0.2);
+}
+
+/* BRONZE – Rank 3 */
+tr.rank-3 {
+  background:
+    linear-gradient(120deg,
+      rgba(205,127,50,0.18),
+      rgba(205,127,50,0.05),
+      transparent
+    );
+  border-left-color: #CD7F32;
+  box-shadow:
+    inset 0 0 16px rgba(205,127,50,0.25),
+    0 0 18px rgba(205,127,50,0.2);
+}
+
+/* Crown / medals (premium placement) */
+tr.rank-1 td.rank::after {
+  content: " 👑";
+  filter: drop-shadow(0 0 6px rgba(255,215,0,.8));
+}
+
+tr.rank-2 td.rank::afte
+
 
 /* TABLE */
 .table-wrap {
@@ -473,11 +570,20 @@ tbody tr:hover {
   <h1 class="animated-header" id="leaderboardTitle"></h1>
 
 
-  <p1>To join our wager leaderboard, sign up for a Stake account using the promo code <b>free21</b> Once registered, your wagers will automatically count towards the leaderboard.</p1>
+  <p class="header-subtext">
+  Join the leaderboard by signing up on Stake using the promo code
+  <span class="highlight">free21</span>.
+  Every eligible wager is tracked automatically and increases your prize value.
+</p>
+
   <div id="countdown"></div>
 </div>
 
 <div class="container">
+<div class="prize-info-box" style="margin-bottom:20px;">
+  <b>Prize Rule:</b>
+  Every $1,000 wagered earns $3 in prize value, with additional bonuses for the Top 3 players.
+</div>
 
   <div class="table-wrap">
     <table>
@@ -514,42 +620,85 @@ tbody tr:hover {
 </div>
 
 <script>
-const sheetId="18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
-const url=`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
+const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-function maskUsername(n){
-  if(!n)return"";
-  const v=Math.ceil(n.length/2);
-  return n.slice(0,v)+"*".repeat(n.length-v);
+// Prize rule
+function calculatePrize(wager) {
+  return (wager / 1000) * 3;
 }
 
-function getPrize(r){
-  const p={1:"👑 $300",2:"🥈 $180",3:"🥉 $120",4:"$40",5:"$35",6:"$32",7:"$30",8:"$23",9:"$22",10:"$16",11:"$15",12:"$14",13:"$13",14:"$12",15:"$11",16:"$10",17:"$9",18:"$8",19:"$5",20:"$5"};
-  return p[r]||"";
+// Top 3 bonus
+function top3Bonus(rank) {
+  if (rank === 1) return 125;
+  if (rank === 2) return 100;
+  if (rank === 3) return 75;
+  return 0;
+}
+
+// Mask username
+function maskUsername(name) {
+  if (!name) return "";
+  const visible = Math.ceil(name.length / 2);
+  return name.slice(0, visible) + "*".repeat(name.length - visible);
 }
 
 fetch(url)
-.then(r=>r.text())
-.then(t=>{
-  const j=JSON.parse(t.substring(47).slice(0,-2));
-  const b=document.getElementById("leaderboard");
-  j.table.rows.slice(0,20).forEach(r=>{
-    const rank=r.c[4]?.v||"";
-    b.innerHTML+=`
-    <tr>
-      <td class="rank">${rank}</td>
-      <td>${maskUsername(r.c[2]?.v||"")}</td>
-      <td class="wager">${Math.floor(r.c[3]?.v||0).toLocaleString()}</td>
-      <td>${getPrize(rank)}</td>
-    </tr>`;
-  });
-});
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const tbody = document.getElementById("leaderboard");
+    const poolEl = document.getElementById("totalPrizePool");
 
+    tbody.innerHTML = "";
+    let totalPrizePool = 0;
 
+    // ✅ Filter valid rows ONLY
+    const rows = json.table.rows.filter(
+      r => r.c && r.c[2] && r.c[3]
+    ).slice(0, 20);
+
+    rows.forEach((row, index) => {
+      // ✅ SAFE rank (always number)
+      const rank = Number(row.c[4]?.v) || index + 1;
+
+      const username = row.c[2]?.v || "";
+      const wager = Number(row.c[3]?.v) || 0;
+
+      const prize = calculatePrize(wager);
+      const bonus = top3Bonus(rank);
+
+      totalPrizePool += prize + bonus;
+
+      const bonusLine = bonus > 0
+        ? `<div style="font-size:12px;color:#9ca3af;">+ $${bonus}</div>`
+        : "";
+
+      tbody.innerHTML += `
+        <tr class="${rank <= 3 ? `rank-${rank}` : ""}">
+          <td class="rank">${rank}</td>
+          <td>${maskUsername(username)}</td>
+          <td class="wager">${Math.floor(wager).toLocaleString()}</td>
+          <td>
+            <div>$${prize.toFixed(2)}</div>
+            ${bonusLine}
+          </td>
+        </tr>
+      `;
+    });
+
+    if (poolEl) {
+      poolEl.innerHTML =
+        `<b>Total Prize Pool:</b> $${totalPrizePool.toFixed(2)}`;
+    }
+  })
+  .catch(err => console.error("Leaderboard error:", err));
 </script>
+
+
 <script>
 (function () {
-  const prizeAmount = "$900";
+  const prizeAmount = "";
 
   const now = new Date();
   const year = now.getFullYear();
