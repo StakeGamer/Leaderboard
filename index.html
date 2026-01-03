@@ -470,7 +470,8 @@ tbody tr:hover {
 
 <!-- HEADER -->
 <div class="header">
-  <h1 class="animated-header">$900 December Wager Leaderboard</h1>
+  <h1 class="animated-header" id="leaderboardTitle"></h1>
+
 
   <p1>To join our wager leaderboard, sign up for a Stake account using the promo code <b>free21</b> Once registered, your wagers will automatically count towards the leaderboard.</p1>
   <div id="countdown"></div>
@@ -544,16 +545,52 @@ fetch(url)
   });
 });
 
-function startCountdown(){
-  const e=new Date(new Date().getFullYear(),11,31,23,59,59);
-  const el=document.getElementById("countdown");
-  setInterval(()=>{
-    const d=e-new Date();
-    if(d<=0)return el.innerHTML="Leaderboard ended!";
-    el.innerHTML=`Time left: ${Math.floor(d/86400000)}d ${Math.floor(d/3600000%24)}h ${Math.floor(d/60000%60)}m ${Math.floor(d/1000%60)}s`;
-  },1000);
-}
-startCountdown();
+
+</script>
+<script>
+(function () {
+  const prizeAmount = "$900";
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const monthIndex = now.getMonth(); // 0-11
+
+  const monthNames = [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ];
+
+  // 🔹 Update leaderboard title
+  const monthName = monthNames[monthIndex];
+  document.getElementById("leaderboardTitle").innerText =
+    `${prizeAmount} ${monthName} Wager Leaderboard`;
+
+  // 🔹 Get last second of current month
+  const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59);
+
+  const countdownEl = document.getElementById("countdown");
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = endDate - now;
+
+    if (diff <= 0) {
+      countdownEl.innerHTML = "Leaderboard ended!";
+      return;
+    }
+
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff / 3600000) % 24);
+    const minutes = Math.floor((diff / 60000) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    countdownEl.innerHTML =
+      `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+})();
 </script>
 
   <script>
@@ -586,4 +623,3 @@ document.addEventListener("click", function (e) {
   
 </body>
 </html>
-
