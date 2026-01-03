@@ -254,63 +254,50 @@ body {
   }
 }
 
-/* ===== PREMIUM TOP 3 STYLES ===== */
+/* =========================
+   TOP 3 ONLY – PREMIUM EFFECTS
+   ========================= */
 
-tbody tr {
-  position: relative;
+/* Base animation */
+@keyframes topPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.015); }
+  100% { transform: scale(1); }
 }
 
-/* Glass base for top 3 */
-tr.rank-1,
-tr.rank-2,
-tr.rank-3 {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-left: 5px solid transparent;
-}
-
-/* GOLD – Rank 1 */
+/* Rank 1 – GOLD (strongest) */
 tr.rank-1 {
-  background:
-    linear-gradient(120deg,
-      rgba(255,215,0,0.22),
-      rgba(255,215,0,0.05),
-      transparent
-    );
-  border-left-color: #FFD700;
-  box-shadow:
-    inset 0 0 20px rgba(255,215,0,0.25),
-    0 0 25px rgba(255,215,0,0.25);
-  animation: goldPulse 3s ease-in-out infinite;
+  animation: topPulse 2.8s ease-in-out infinite;
 }
 
-/* SILVER – Rank 2 */
+tr.rank-1:hover {
+  box-shadow:
+    0 0 35px rgba(255,215,0,0.55),
+    inset 0 0 25px rgba(255,215,0,0.35);
+}
+
+/* Rank 2 – SILVER */
 tr.rank-2 {
-  background:
-    linear-gradient(120deg,
-      rgba(192,192,192,0.18),
-      rgba(192,192,192,0.05),
-      transparent
-    );
-  border-left-color: #C0C0C0;
-  box-shadow:
-    inset 0 0 18px rgba(192,192,192,0.25),
-    0 0 20px rgba(192,192,192,0.2);
+  animation: topPulse 3.2s ease-in-out infinite;
 }
 
-/* BRONZE – Rank 3 */
-tr.rank-3 {
-  background:
-    linear-gradient(120deg,
-      rgba(205,127,50,0.18),
-      rgba(205,127,50,0.05),
-      transparent
-    );
-  border-left-color: #CD7F32;
+tr.rank-2:hover {
   box-shadow:
-    inset 0 0 16px rgba(205,127,50,0.25),
-    0 0 18px rgba(205,127,50,0.2);
+    0 0 28px rgba(192,192,192,0.45),
+    inset 0 0 18px rgba(192,192,192,0.3);
 }
+
+/* Rank 3 – BRONZE */
+tr.rank-3 {
+  animation: topPulse 3.6s ease-in-out infinite;
+}
+
+tr.rank-3:hover {
+  box-shadow:
+    0 0 24px rgba(205,127,50,0.45),
+    inset 0 0 16px rgba(205,127,50,0.3);
+}
+
 /* =========================
    GLOW EFFECT FOR TABLE HEADERS
    ========================= */
