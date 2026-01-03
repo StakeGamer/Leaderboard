@@ -311,6 +311,43 @@ tr.rank-3 {
     inset 0 0 16px rgba(205,127,50,0.25),
     0 0 18px rgba(205,127,50,0.2);
 }
+/* =========================
+   GLOW EFFECT FOR TABLE HEADERS
+   ========================= */
+
+th {
+  position: relative;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+/* Base glow animation */
+@keyframes headerGlow {
+  0%   { text-shadow: 0 0 6px rgba(59,130,246,0.3); }
+  50%  { text-shadow: 0 0 14px rgba(59,130,246,0.7); }
+  100% { text-shadow: 0 0 6px rgba(59,130,246,0.3); }
+}
+
+/* Individual glows */
+.glow-rank {
+  color: #facc15;
+  animation: headerGlow 2.5s ease-in-out infinite;
+}
+
+.glow-user {
+  color: #e5e7eb;
+  animation: headerGlow 3s ease-in-out infinite;
+}
+
+.glow-wager {
+  color: #60a5fa;
+  animation: headerGlow 2.8s ease-in-out infinite;
+}
+
+.glow-prize {
+  color: #22c55e;
+  animation: headerGlow 2.2s ease-in-out infinite;
+}
 
 /* Crown / medals (premium placement) */
 tr.rank-1 td.rank::after {
@@ -589,10 +626,11 @@ tbody tr:hover {
     <table>
       <thead>
         <tr>
-          <th>Rank</th>
-          <th>User</th>
-          <th>Wager</th>
-          <th>Prize</th>
+          <th class="glow-rank">Rank</th>
+<th class="glow-user">User</th>
+<th class="glow-wager">Wager</th>
+<th class="glow-prize">Prize</th>
+
         </tr>
       </thead>
       <tbody id="leaderboard"></tbody>
