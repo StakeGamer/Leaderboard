@@ -606,7 +606,7 @@ tbody tr:hover {
 <div class="container">
 <div class="prize-info-box" style="margin-bottom:20px;">
   <b>Prize Rule:</b>
-  Every $1,000 wagered earns $2 in prize value, with additional bonuses for the Top 3 players.
+  Every $1,000 wagered earns $3 in prize value, with additional bonuses for the Top 3 players.
 </div>
 
   <div class="table-wrap">
@@ -650,7 +650,7 @@ const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:j
 
 // Prize rule
 function calculatePrize(wager) {
-  return (wager / 1000) * 2;
+  return (wager / 1000) * 3;
 }
 
 // Top 3 bonus
@@ -797,4 +797,5 @@ document.addEventListener("click", function (e) {
   
 </body>
 </html>
+
 
