@@ -398,8 +398,11 @@ tbody tr:hover {
   padding:22px;
   font-size:12px;
   color:#6b7280;
+}   
+  .hidden-row {
+  display: none;
 }
-  
+
   /* =========================
    GLOBAL HOVER EFFECT SYSTEM
    ========================= */
@@ -605,8 +608,16 @@ tbody tr:hover {
 
 <div class="container">
 <div class="prize-info-box" style="margin-bottom:20px;">
-  <b>Prize Rule:</b>
-  Every $1,000 wagered earns $3 in prize value, with additional bonuses for the Top 3 players.
+  <b>Prize Rules</b>
+<ul style="margin:10px 0 0 18px; line-height:1.7;">
+  <li>Only players who wager <b>$1,000 or more</b> appear on the leaderboard.</li>
+  <li>Top 20 players earn <b>$3 per $1,000</b> wagered.</li>
+  <li>Players outside the Top 20 earn <b>$2 per $1,000</b> wagered.</li>
+  <li>Extra bonuses apply for the <b>Top 3</b>.</li>
+</ul>
+
+
+
 </div>
 
   <div class="table-wrap">
@@ -623,6 +634,9 @@ tbody tr:hover {
       <tbody id="leaderboard"></tbody>
     </table>
   </div>
+<div style="text-align:center; margin-top:16px;">
+  <button id="toggleBtn" class="promo-btn">Show More</button>
+</div>
 
   <div class="prize-info-box">
     You will receive your prize directly to your Stake account each month after the leaderboard ends.
@@ -648,10 +662,22 @@ tbody tr:hover {
 const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
 const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-// Prize rule
-function calculatePrize(wager) {
-  return (wager / 1000) * 3;
+// Prize rule (UPDATED)
+function calculatePrize(wager, rank) {
+  // Top 20 → $3 per $1000
+  if (rank <= 20) {
+    return (wager / 1000) * 3;
+  }
+
+  // Below Top 20 but wager >= $1000 → $2 per $1000
+  if (wager >= 1000) {
+    return (wager / 1000) * 2;
+  }
+
+  // Otherwise no prize
+  return 0;
 }
+
 
 // Top 3 bonus
 function top3Bonus(rank) {
@@ -681,7 +707,7 @@ fetch(url)
     // ✅ Filter valid rows ONLY
     const rows = json.table.rows.filter(
       r => r.c && r.c[2] && r.c[3]
-    ).slice(0, 20);
+    ).slice(0, 35);
 
     rows.forEach((row, index) => {
       // ✅ SAFE rank (always number)
@@ -690,7 +716,8 @@ fetch(url)
       const username = row.c[2]?.v || "";
       const wager = Number(row.c[3]?.v) || 0;
 
-      const prize = calculatePrize(wager);
+      const prize = calculatePrize(wager, rank);
+
       const bonus = top3Bonus(rank);
 
       totalPrizePool += prize + bonus;
@@ -699,8 +726,11 @@ fetch(url)
         ? `<div style="font-size:12px;color:#9ca3af;">+ $${bonus}</div>`
         : "";
 
-      tbody.innerHTML += `
-        <tr class="${rank <= 3 ? `rank-${rank}` : ""}">
+     const hiddenClass = rank > 20 ? "hidden-row extra-row" : "";
+
+tbody.innerHTML += `
+  <tr class="${rank <= 3 ? `rank-${rank}` : ""} ${hiddenClass}">
+
           <td class="rank">${rank}</td>
           <td>${maskUsername(username)}</td>
           <td class="wager">${Math.floor(wager).toLocaleString()}</td>
@@ -766,6 +796,23 @@ fetch(url)
   setInterval(updateCountdown, 1000);
 })();
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("toggleBtn");
+  let expanded = false;
+
+  btn.addEventListener("click", () => {
+    const extraRows = document.querySelectorAll(".extra-row");
+
+    extraRows.forEach(row => {
+      row.style.display = expanded ? "none" : "table-row";
+    });
+
+    btn.textContent = expanded ? "Show More" : "Show Less";
+    expanded = !expanded;
+  });
+});
+</script>
 
   <script>
 document.addEventListener("click", function (e) {
@@ -797,5 +844,4 @@ document.addEventListener("click", function (e) {
   
 </body>
 </html>
-
 
