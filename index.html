@@ -613,7 +613,6 @@ tbody tr:hover {
   <li>Only players who wager <b>$1,000 or more</b> appear on the leaderboard.</li>
   <li>Top 20 players earn <b>$3 per $1,000</b> wagered.</li>
   <li>Players outside the Top 20 earn <b>$2 per $1,000</b> wagered.</li>
-  <li>Extra bonuses apply for the <b>Top 3</b>.</li>
 </ul>
 
 
@@ -678,15 +677,6 @@ function calculatePrize(wager, rank) {
   return 0;
 }
 
-
-// Top 3 bonus
-function top3Bonus(rank) {
-  if (rank === 1) return 125;
-  if (rank === 2) return 100;
-  if (rank === 3) return 75;
-  return 0;
-}
-
 // Mask username
 function maskUsername(name) {
   if (!name) return "";
@@ -718,13 +708,8 @@ fetch(url)
 
       const prize = calculatePrize(wager, rank);
 
-      const bonus = top3Bonus(rank);
+      totalPrizePool += prize;
 
-      totalPrizePool += prize + bonus;
-
-      const bonusLine = bonus > 0
-        ? `<div style="font-size:12px;color:#9ca3af;">+ $${bonus}</div>`
-        : "";
 
      const hiddenClass = rank > 20 ? "hidden-row extra-row" : "";
 
@@ -735,9 +720,9 @@ tbody.innerHTML += `
           <td>${maskUsername(username)}</td>
           <td class="wager">${Math.floor(wager).toLocaleString()}</td>
           <td>
-            <div>$${prize.toFixed(2)}</div>
-            ${bonusLine}
+              <div>$${prize.toFixed(2)}</div>
           </td>
+
         </tr>
       `;
     });
@@ -844,4 +829,5 @@ document.addEventListener("click", function (e) {
   
 </body>
 </html>
+
 
