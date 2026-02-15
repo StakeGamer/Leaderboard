@@ -253,6 +253,105 @@ body {
     padding: 0 10px;
   }
 }
+/* =========================
+   PREMIUM JOIN BOX
+   ========================= */
+
+.premium-join-box {
+  margin: 18px auto 0;
+  max-width: 760px;
+  padding: 20px 26px;
+  border-radius: 16px;
+  text-align: center;
+
+  background: linear-gradient(145deg,#0f172a,#020617);
+  border: 1px solid rgba(59,130,246,.25);
+
+  box-shadow:
+    0 0 35px rgba(59,130,246,.15),
+    inset 0 0 25px rgba(59,130,246,.08);
+
+  backdrop-filter: blur(10px);
+  
+  
+}
+
+.premium-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #60a5fa;
+  letter-spacing: .4px;
+}
+
+.premium-text {
+  font-size: 17px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.premium-code {
+  color: #fff;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#3b82f6,#60a5fa);
+  box-shadow: 0 0 18px rgba(59,130,246,.6);
+}
+
+/* Mobile */
+@media (max-width:640px){
+  .premium-title{font-size:18px;}
+  .premium-text{font-size:15px;}
+}
+.live-stats-box{
+  margin:20px auto;
+  max-width:760px;
+  padding:22px 28px;
+  border-radius:18px;
+  text-align:center;
+
+  background:linear-gradient(145deg,#0f172a,#020617);
+  border:1px solid rgba(59,130,246,.25);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:30px;
+
+  box-shadow:
+    0 0 40px rgba(59,130,246,.15),
+    inset 0 0 30px rgba(59,130,246,.08);
+}
+
+.stat-label{
+  font-size:14px;
+  color:#94a3b8;
+  margin-bottom:6px;
+}
+
+.stat-value{
+  font-size:26px;
+  font-weight:900;
+  color:#60a5fa;
+}
+
+.divider{
+  width:1px;
+  height:40px;
+  background:linear-gradient(to bottom,transparent,#3b82f6,transparent);
+}
+
+@media(max-width:640px){
+  .live-stats-box{
+    flex-direction:column;
+    gap:16px;
+  }
+  .divider{
+    width:80%;
+    height:1px;
+  }
+}
 
 /* =========================
    TOP 3 ONLY – PREMIUM EFFECTS
@@ -597,27 +696,40 @@ tbody tr:hover {
   <h1 class="animated-header" id="leaderboardTitle"></h1>
 
 
-  <p class="header-subtext">
-  Join the leaderboard by signing up on Stake using the promo code
-  <span class="highlight">free21</span>.
-  Every eligible wager is tracked automatically and increases your prize value.
-</p>
-
-  <div id="countdown"></div>
+  <div class="premium-join-box">
+  <div class="premium-title">🚀 Join the Leaderboard</div>
+  <div class="premium-text">
+    Sign up on Stake using code
+    <span class="premium-code">free21</span>
+    and start wagering to climb ranks and earn rewards automatically.
+  </div>
+</div>
 </div>
 
 <div class="container">
-<div class="prize-info-box" style="margin-bottom:20px;">
-  <b>Prize Rules</b>
-<ul style="margin:10px 0 0 18px; line-height:1.7;">
-  <li>Only players who wager <b>$1,000 or more</b> appear on the leaderboard.</li>
-  <li>Top 20 players earn <b>$3 per $1,000</b> wagered.</li>
-  <li>Players outside the Top 20 earn <b>$2 per $1,000</b> wagered.</li>
-</ul>
+ <div class="live-stats-box">
 
+  <div class="stat-block">
+    <div class="stat-label">🎁 Total This Month</div>
+    <div id="monthlyTotal" class="stat-value">$0.00</div>
+  </div>
 
+  <div class="divider"></div>
+
+  <div class="stat-block">
+    <div class="stat-label">💰 Total Giveaways So Far</div>
+    <div class="stat-value">$5,000+</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="stat-block">
+    <div class="stat-label">⏳ Time Remaining</div>
+    <div id="countdown" class="stat-value"></div>
+  </div>
 
 </div>
+
 
   <div class="table-wrap">
     <table>
@@ -661,21 +773,19 @@ tbody tr:hover {
 const sheetId = "18OjTP3tfCGNI4R_b0Jo4ShH8x_M0NSXAAgdMGIGq9Jk";
 const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-// Prize rule (UPDATED)
 function calculatePrize(wager, rank) {
-  // Top 20 → $3 per $1000
-  if (rank <= 20) {
-    return (wager / 1000) * 3;
-  }
 
-  // Below Top 20 but wager >= $1000 → $2 per $1000
-  if (wager >= 1000) {
-    return (wager / 1000) * 2;
-  }
+  if (wager < 1000) return 0;
 
-  // Otherwise no prize
-  return 0;
+  if (rank === 1) return (wager / 1000) * 5;
+  if (rank === 2) return (wager / 1000) * 4.5;
+  if (rank === 3) return (wager / 1000) * 4;
+
+  if (rank <= 20) return (wager / 1000) * 3;
+
+  return (wager / 1000) * 2;
 }
+
 
 // Mask username
 function maskUsername(name) {
@@ -689,7 +799,8 @@ fetch(url)
   .then(text => {
     const json = JSON.parse(text.substring(47).slice(0, -2));
     const tbody = document.getElementById("leaderboard");
-    const poolEl = document.getElementById("totalPrizePool");
+    const poolEl = document.getElementById("monthlyTotal");
+
 
     tbody.innerHTML = "";
     let totalPrizePool = 0;
@@ -728,9 +839,27 @@ tbody.innerHTML += `
     });
 
     if (poolEl) {
-      poolEl.innerHTML =
-        `<b>Total Prize Pool:</b> $${totalPrizePool.toFixed(2)}`;
+
+  let start = 0;
+  const end = totalPrizePool;
+  const duration = 1800;
+  const startTime = performance.now();
+
+  function animate(now){
+    const progress = Math.min((now - startTime) / duration, 1);
+    const value = start + (end - start) * progress;
+
+    poolEl.innerHTML = `$${value.toFixed(2)}`;
+
+
+    if(progress < 1){
+      requestAnimationFrame(animate);
     }
+  }
+
+  requestAnimationFrame(animate);
+}
+
   })
   .catch(err => console.error("Leaderboard error:", err));
 </script>
@@ -829,5 +958,6 @@ document.addEventListener("click", function (e) {
   
 </body>
 </html>
+
 
 
