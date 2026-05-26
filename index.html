@@ -775,15 +775,14 @@ const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:j
 
 function calculatePrize(wager, rank) {
 
-  if (wager < 1000) return 0;
+  if (wager < 500) return 0;
 
-  if (rank === 1) return (wager / 1000) * 5;
-  if (rank === 2) return (wager / 1000) * 4.5;
-  if (rank === 3) return (wager / 1000) * 4;
+  if (rank === 1) return (wager / 1000) * 7;
+  if (rank === 2) return (wager / 1000) * 6;
+  if (rank === 3) return (wager / 1000) * 5;
 
-  if (rank <= 20) return (wager / 1000) * 3;
-
-  return (wager / 1000) * 2;
+  if (rank <= 20) return (wager / 1000) * 4.5;
+  return (wager / 1000) * 4;
 }
 
 
@@ -808,7 +807,7 @@ fetch(url)
     // ✅ Filter valid rows ONLY
     const rows = json.table.rows.filter(
       r => r.c && r.c[2] && r.c[3]
-    ).slice(0, 35);
+    ).slice(0, 50);
 
     rows.forEach((row, index) => {
       // ✅ SAFE rank (always number)
